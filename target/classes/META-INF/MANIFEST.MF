@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: rest-persona
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: Dell
+Implementation-Vendor-Id: com.lapm.restpersona
+Build-Jdk: 1.8.0_211
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/rest-persona
+Created-By: Maven Integration for Eclipse
+
