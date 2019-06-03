@@ -97,35 +97,6 @@ public class PersonaTest {
         mockMvc.perform(get("/persona"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
-//                .andExpect(jsonPath("$", hasSize(4)))
-//                .andExpect(jsonPath("$[0].idPersona", is(1)))
-//                .andExpect(jsonPath("$[0].nombre", is("Alejandra Rodriguez Garcia")))
-//                .andExpect(jsonPath("$[0].sexo", is("F")))
-//                .andExpect(jsonPath("$[0].fechaNacimiento", is("1985-12-01")))
-//                .andExpect(jsonPath("$[0].nacionalidad", is("Mexicana")))
-//                .andExpect(jsonPath("$[0].telefono", is("5532123663")))
-//                .andExpect(jsonPath("$[0].email", is("alejandra@gmail.com")))
-//                .andExpect(jsonPath("$[1].idPersona", is(2)))
-//                .andExpect(jsonPath("$[1].nombre", is("Pedro Aguilar Lopez")))
-//                .andExpect(jsonPath("$[1].sexo", is("M")))
-//                .andExpect(jsonPath("$[1].fechaNacimiento", is("1980-09-01")))
-//                .andExpect(jsonPath("$[1].nacionalidad", is("Colombiana")))
-//                .andExpect(jsonPath("$[1].telefono", is("5514785236")))
-//                .andExpect(jsonPath("$[1].email", is("pedro@gmail.com")))
-//                .andExpect(jsonPath("$[2].idPersona", is(3)))
-//                .andExpect(jsonPath("$[2].nombre", is("Maria del Rosario Dominguez Sanchez")))
-//                .andExpect(jsonPath("$[2].sexo", is("F")))
-//                .andExpect(jsonPath("$[2].fechaNacimiento", is("1989-11-09")))
-//                .andExpect(jsonPath("$[2].nacionalidad", is("Mexicana")))
-//                .andExpect(jsonPath("$[2].telefono", is("5536985245")))
-//                .andExpect(jsonPath("$[2].email", is("rosario@gmail.com")))
-//                .andExpect(jsonPath("$[3].idPersona", is(4)))
-//                .andExpect(jsonPath("$[3].nombre", is("Mario Martinez Rodriguez")))
-//                .andExpect(jsonPath("$[3].sexo", is("M")))
-//                .andExpect(jsonPath("$[3].fechaNacimiento", is("1981-01-10")))
-//                .andExpect(jsonPath("$[3].nacionalidad", is("Mexicana")))
-//                .andExpect(jsonPath("$[3].telefono", is("5512365478")))
-//                .andExpect(jsonPath("$[3].email", is("mario@gmail.com")));
 
         verify(personaRepository, times(1)).findAll(any(Pageable.class));
     }
@@ -151,6 +122,160 @@ public class PersonaTest {
 
     }
     
+    @Test
+    public void save_persona_error_nombre_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, null, "M", LocalDate.of(1989, 06, 12), "Mexicana","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void save_persona_error_nombre_length() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "L", "M", LocalDate.of(1989, 06, 12), "Mexicana","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void save_persona_error_sexo_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", null, LocalDate.of(1989, 06, 12), "Mexicana","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void save_persona_error_sexo_format() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "A", LocalDate.of(1989, 06, 12), "Mexicana","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void save_persona_error_fecha_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", null, "Mexicana","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void save_persona_error_nacionalidad_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), null,"5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void save_persona_error_nacionalidad_format() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), "","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void save_persona_error_telefono_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), "Mexicana",null,"luis@gmail.com");
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void save_persona_error_telefono_format() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), "Mexicana","5555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void save_persona_error_email_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), "Mexicana","5555555555",null);
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void save_persona_error_email_format() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), "Mexicana","5555555555","luis");
+    	
+
+        mockMvc.perform(post("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
 
     @Test
     public void update_persona_OK() throws Exception {
@@ -170,6 +295,160 @@ public class PersonaTest {
                 .andExpect(jsonPath("$.nacionalidad", is("Mexicana")))
                 .andExpect(jsonPath("$.telefono", is("5511111111")))
                 .andExpect(jsonPath("$.email", is("alejandra@gmail.com")));
+
+
+    }
+    
+    @Test
+    public void update_persona_error_nombre_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, null, "M", LocalDate.of(1989, 06, 12), "Mexicana","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void update_persona_error_nombre_length() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "L", "M", LocalDate.of(1989, 06, 12), "Mexicana","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void update_persona_error_sexo_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", null, LocalDate.of(1989, 06, 12), "Mexicana","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void update_persona_error_sexo_format() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "A", LocalDate.of(1989, 06, 12), "Mexicana","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void update_persona_error_fecha_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", null, "Mexicana","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void update_persona_error_nacionalidad_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), null,"5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void update_persona_error_nacionalidad_format() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), "","5555555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void update_persona_error_telefono_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), "Mexicana",null,"luis@gmail.com");
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void update_persona_error_telefono_format() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), "Mexicana","5555555","luis@gmail.com");
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void update_persona_error_email_null() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), "Mexicana","5555555555",null);
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+
+    }
+    
+    @Test
+    public void update_persona_error_email_format() throws Exception {
+
+    	PersonaEntity personaEntity = new PersonaEntity(5, "Luis Perdomo", "M", LocalDate.of(1989, 06, 12), "Mexicana","5555555555","luis");
+    	
+
+        mockMvc.perform(put("/persona")
+                .content(om.writeValueAsString(modelMapper.map(personaEntity, Persona.class)))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
 
 
     }

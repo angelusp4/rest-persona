@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final String MSG_TYPE = "error";
-	private static final String MSG_METHOD_ARGUMENT_NOT_VALID = "Failed validation";
 	private static final String MSG_HTTP_MESSAGE_NOT_READABLE = "The body is missing on the request";
 
 	@ExceptionHandler(Exception.class)
@@ -55,7 +54,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ExceptionResponse exceptionResponse = new ExceptionResponse(MSG_TYPE, HttpStatus.BAD_REQUEST.value(),
-				HttpStatus.BAD_REQUEST.getReasonPhrase(), request.getDescription(false), MSG_METHOD_ARGUMENT_NOT_VALID);
+				HttpStatus.BAD_REQUEST.getReasonPhrase(), request.getDescription(false), ex.getBindingResult().getFieldError().getDefaultMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 

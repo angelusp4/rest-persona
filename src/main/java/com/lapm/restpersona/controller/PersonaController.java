@@ -1,5 +1,7 @@
 package com.lapm.restpersona.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +45,7 @@ public class PersonaController {
 	
 	@ApiOperation("Guarda los datos de una persona")
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> guardarPersona(@RequestBody Persona persona){
+	public ResponseEntity<Void> guardarPersona(@RequestBody @Valid Persona persona){
 		personaService.guardarPersona(persona);
 		
 		return new ResponseEntity<>(HttpStatus.CREATED);
@@ -51,7 +53,7 @@ public class PersonaController {
 	
 	@ApiOperation("Actualiza los datos de una persona")
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Persona> actualizarPersona(@RequestBody Persona persona){
+	public ResponseEntity<Persona> actualizarPersona(@RequestBody @Valid Persona persona){
 		personaService.actualizarPersona(persona);
 		return new ResponseEntity<>(persona, HttpStatus.OK);
 	}
