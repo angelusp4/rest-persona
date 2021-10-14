@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.lapm.restpersona.model.exception.ResponseError;
+
 @ControllerAdvice
 @RestController
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
@@ -22,21 +24,21 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<Object> handleAllExcepciones(Exception ex, WebRequest request) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(MSG_TYPE, HttpStatus.INTERNAL_SERVER_ERROR.value(),
+		ResponseError exceptionResponse = new ResponseError(MSG_TYPE, HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), request.getDescription(false), ex.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler(ModeloNotFoundException.class)
-	public final ResponseEntity<Object> handleModeloExcepciones(ModeloNotFoundException ex, WebRequest request) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(MSG_TYPE, HttpStatus.NOT_FOUND.value(),
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public final ResponseEntity<Object> handleModeloExcepciones(ResourceNotFoundException ex, WebRequest request) {
+		ResponseError exceptionResponse = new ResponseError(MSG_TYPE, HttpStatus.NOT_FOUND.value(),
 				HttpStatus.NOT_FOUND.getReasonPhrase(), request.getDescription(false), ex.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
 	}
 	
 	@ExceptionHandler(BadParametersException.class)
 	public final ResponseEntity<Object> handleBadParametersException(BadParametersException ex, WebRequest request) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(MSG_TYPE, HttpStatus.BAD_REQUEST.value(),
+		ResponseError exceptionResponse = new ResponseError(MSG_TYPE, HttpStatus.BAD_REQUEST.value(),
 				HttpStatus.BAD_REQUEST.getReasonPhrase(), request.getDescription(false), ex.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
@@ -44,7 +46,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleServletRequestBindingException(ServletRequestBindingException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(MSG_TYPE, HttpStatus.UNPROCESSABLE_ENTITY.value(),
+		ResponseError exceptionResponse = new ResponseError(MSG_TYPE, HttpStatus.UNPROCESSABLE_ENTITY.value(),
 				HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(), request.getDescription(false),
 				"Error in header" + ex.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.UNPROCESSABLE_ENTITY);
@@ -53,7 +55,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(MSG_TYPE, HttpStatus.BAD_REQUEST.value(),
+		ResponseError exceptionResponse = new ResponseError(MSG_TYPE, HttpStatus.BAD_REQUEST.value(),
 				HttpStatus.BAD_REQUEST.getReasonPhrase(), request.getDescription(false), ex.getBindingResult().getFieldError().getDefaultMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
@@ -61,7 +63,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(MSG_TYPE, HttpStatus.BAD_REQUEST.value(),
+		ResponseError exceptionResponse = new ResponseError(MSG_TYPE, HttpStatus.BAD_REQUEST.value(),
 				HttpStatus.BAD_REQUEST.getReasonPhrase(), request.getDescription(false), MSG_HTTP_MESSAGE_NOT_READABLE);
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
@@ -69,7 +71,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(MSG_TYPE, HttpStatus.BAD_REQUEST.value(),
+		ResponseError exceptionResponse = new ResponseError(MSG_TYPE, HttpStatus.BAD_REQUEST.value(),
 				HttpStatus.BAD_REQUEST.getReasonPhrase(), request.getDescription(false), ex.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}

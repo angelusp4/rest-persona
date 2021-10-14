@@ -1,5 +1,6 @@
-package com.lapm.restpersona.dto;
+package com.lapm.restpersona.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
@@ -7,10 +8,12 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.lapm.restpersona.entity.PersonaEntity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,25 +21,17 @@ import lombok.Data;
 
 @Data
 @ApiModel(description = "muestra la informacion de una persona")
-public class Persona {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Persona implements Serializable{
 
-	public Persona(Integer idPersona, String nombre, String sexo, LocalDate fechaNacimiento, String nacionalidad,
-			String telefono, String email) {
-		this.idPersona = idPersona;
-		this.nombre = nombre;
-		this.sexo = sexo;
-		this.fechaNacimiento = fechaNacimiento;
-		this.nacionalidad = nacionalidad;
-		this.telefono = telefono;
-		this.email = email;
-	}
 
-	public Persona() {
-	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3721761266007973550L;
 
 	@ApiModelProperty(notes = "Identificador unico de una persona que ya se registro.")
-	@NotNull(message="El id de la persona es requerido")
-	private Integer idPersona;
+	private Integer id;
 
 	@ApiModelProperty(notes = "Nombre completo.")
 	@NotNull(message="El nombre es requerido")
@@ -53,7 +48,7 @@ public class Persona {
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@JsonSerialize(using = LocalDateSerializer.class)
 	@ApiModelProperty(notes = "Fecha de nacimiento en formato YYYY-MM-DD.")
-	@NotNull(message="Fecha de nacimiento es requerido")
+	@NotNull(message="Fecha de nacimiento es requerida")
 	private LocalDate fechaNacimiento;
 
 	@ApiModelProperty(notes = "Nacionalidad.")
@@ -70,4 +65,21 @@ public class Persona {
 	@Size(min=5, max=300, message="El nombre debe tener entre {min} y {max} caracteres")
 	@NotNull(message="El correo es requerido")
 	private String email;
+	
+	public PersonaEntity toEntity(){
+		PersonaEntity entity = new PersonaEntity();
+		entity.setNombre(nombre);
+		entity.setSexo(sexo);
+		entity.setFechaNacimiento(fechaNacimiento);
+		entity.setNacionalidad(nacionalidad);
+		entity.setTelefono(telefono);
+		entity.setEmail(email);
+		return entity;
+	}
+	
+	public PersonaEntity mergeEntity() {
+		PersonaEntity entity = toEntity();
+		entity.setId(id);
+		return entity;
+	}
 }

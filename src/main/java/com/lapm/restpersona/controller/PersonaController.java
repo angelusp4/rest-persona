@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,17 +14,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lapm.restpersona.dto.Persona;
+import com.lapm.restpersona.exception.ResourceNotFoundException;
+import com.lapm.restpersona.model.Persona;
 import com.lapm.restpersona.service.PersonaService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 	
 @RestController
-@RequestMapping("/persona")
+@RequestMapping("/personas")
 @Api(value="Servicio REST de personas")
+@Slf4j
 public class PersonaController {
 
 	@Autowired
@@ -33,35 +36,43 @@ public class PersonaController {
 	
 	@ApiOperation("Regresa los datos de todas las personas registradas")
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Page<Persona>> consultarPersonas(Pageable pageable){
-		return new ResponseEntity<>(personaService.consultarPersonas(pageable), HttpStatus.OK);
+	public Page<Persona> consultarPersonas(Pageable pageable){
+		return personaService.consultarPersonas(pageable);
 	}
 	
 	@ApiOperation("Regresa los datos de una persona por su id")
-	@GetMapping(value = "/{idPersona}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Persona> consultarPersonaPorId(@PathVariable("idPersona") Integer idPersona){
-		return new ResponseEntity<>(personaService.consultarPersonaPorId(idPersona), HttpStatus.OK);
+	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Persona consultarPersonaPorId(@PathVariable("id") Integer id){
+		Persona persona = personaService.consultarPersonaPorId(id);
+		if (persona == null)
+			throw new ResourceNotFoundException("No se encontraron resultados para el id: " + id);
+		return persona;
 	}
 	
+	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation("Guarda los datos de una persona")
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> guardarPersona(@RequestBody @Valid Persona persona){
-		personaService.guardarPersona(persona);
-		
-		return new ResponseEntity<>(HttpStatus.CREATED);
+	public Persona guardarPersona(@RequestBody @Valid Persona persona){
+		return personaService.guardarPersona(persona.toEntity());
 	}
 	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation("Actualiza los datos de una persona")
-	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Persona> actualizarPersona(@RequestBody @Valid Persona persona){
-		personaService.actualizarPersona(persona);
-		return new ResponseEntity<>(persona, HttpStatus.OK);
+	@PutMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+	public void actualizarPersona(@PathVariable("id") Integer id, @RequestBody @Valid Persona persona){
+		log.info("Actualizando persona con id: {}", id);
+		if (personaService.consultarPersonaPorId(id) == null)
+			throw new ResourceNotFoundException("No se encontraron resultados para el id: " + id);
+		persona.setId(id);
+		personaService.actualizarPersona(persona.mergeEntity());
 	}
 	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation("borra los datos de una persona por su id")
-	@DeleteMapping(value = "/{idPersona}",produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> borrarPersonaPorId(@PathVariable("idPersona") Integer idPersona){
-		personaService.borrarPersonaPorId(idPersona);
-		return new ResponseEntity<>(HttpStatus.OK);
+	@DeleteMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+	public void borrarPersonaPorId(@PathVariable("id") Integer id){
+		if (personaService.consultarPersonaPorId(id) == null)
+			throw new ResourceNotFoundException("No se encontraron resultados para el id: " + id);
+		personaService.borrarPersonaPorId(id);
 	}
 }

@@ -1,9 +1,9 @@
-package com.lapm.restpersona.exception;
+package com.lapm.restpersona.model.exception;
 
 import lombok.Data;
 
 @Data
-public class ExceptionResponse {
+public class ResponseError {
 
 	private String type;
 	private int status;
@@ -12,7 +12,7 @@ public class ExceptionResponse {
 	private String message;
 	
 	
-	public ExceptionResponse(String type, int status, String code, String helpUrl, String message) {
+	public ResponseError(String type, int status, String code, String helpUrl, String message) {
 		super();
 		this.type = type;
 		this.status = status;
