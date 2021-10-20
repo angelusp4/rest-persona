@@ -1,4 +1,4 @@
-package com.lapm.restpersona.model;
+package com.lapm.restpersona.dto;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Response<T> implements Serializable{
+public class ResponseDTO<T> implements Serializable{
 
 	/**
 	 * 

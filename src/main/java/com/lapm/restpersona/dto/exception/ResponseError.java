@@ -1,4 +1,4 @@
-package com.lapm.restpersona.model.exception;
+package com.lapm.restpersona.dto.exception;
 
 import lombok.Data;
 

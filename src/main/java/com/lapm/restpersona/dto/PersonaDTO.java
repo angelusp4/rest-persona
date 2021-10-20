@@ -1,4 +1,4 @@
-package com.lapm.restpersona.model;
+package com.lapm.restpersona.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.lapm.restpersona.entity.PersonaEntity;
+import com.lapm.restpersona.entity.Persona;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,7 +22,7 @@ import lombok.Data;
 @Data
 @ApiModel(description = "muestra la informacion de una persona")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Persona implements Serializable{
+public class PersonaDTO implements Serializable{
 
 
 	/**
@@ -66,8 +66,8 @@ public class Persona implements Serializable{
 	@NotNull(message="El correo es requerido")
 	private String email;
 	
-	public PersonaEntity toEntity(){
-		PersonaEntity entity = new PersonaEntity();
+	public Persona toEntity(){
+		Persona entity = new Persona();
 		entity.setNombre(nombre);
 		entity.setSexo(sexo);
 		entity.setFechaNacimiento(fechaNacimiento);
@@ -77,8 +77,8 @@ public class Persona implements Serializable{
 		return entity;
 	}
 	
-	public PersonaEntity mergeEntity() {
-		PersonaEntity entity = toEntity();
+	public Persona mergeEntity() {
+		Persona entity = toEntity();
 		entity.setId(id);
 		return entity;
 	}

@@ -4,10 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.lapm.restpersona.entity.PersonaEntity;
+import com.lapm.restpersona.entity.Persona;
 
-public interface PersonaRepository extends JpaRepository<PersonaEntity, Integer>{
+public interface PersonaRepository extends JpaRepository<Persona, Integer>{
 
-	public Page<PersonaEntity> findAll(Pageable pageable);
+	public Page<Persona> findAll(Pageable pageable);
 	
 }

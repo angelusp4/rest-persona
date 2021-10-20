@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lapm.restpersona.dto.PersonaDTO;
 import com.lapm.restpersona.exception.ResourceNotFoundException;
-import com.lapm.restpersona.model.Persona;
 import com.lapm.restpersona.service.PersonaService;
 
 import io.swagger.annotations.Api;
@@ -36,14 +36,14 @@ public class PersonaController {
 	
 	@ApiOperation("Regresa los datos de todas las personas registradas")
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Page<Persona> consultarPersonas(Pageable pageable){
+	public Page<PersonaDTO> consultarPersonas(Pageable pageable){
 		return personaService.consultarPersonas(pageable);
 	}
 	
 	@ApiOperation("Regresa los datos de una persona por su id")
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Persona consultarPersonaPorId(@PathVariable("id") Integer id){
-		Persona persona = personaService.consultarPersonaPorId(id);
+	public PersonaDTO consultarPersonaPorId(@PathVariable("id") Integer id){
+		PersonaDTO persona = personaService.consultarPersonaPorId(id);
 		if (persona == null)
 			throw new ResourceNotFoundException("No se encontraron resultados para el id: " + id);
 		return persona;
@@ -52,14 +52,14 @@ public class PersonaController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation("Guarda los datos de una persona")
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Persona guardarPersona(@RequestBody @Valid Persona persona){
+	public PersonaDTO guardarPersona(@RequestBody @Valid PersonaDTO persona){
 		return personaService.guardarPersona(persona.toEntity());
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation("Actualiza los datos de una persona")
 	@PutMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-	public void actualizarPersona(@PathVariable("id") Integer id, @RequestBody @Valid Persona persona){
+	public void actualizarPersona(@PathVariable("id") Integer id, @RequestBody @Valid PersonaDTO persona){
 		log.info("Actualizando persona con id: {}", id);
 		if (personaService.consultarPersonaPorId(id) == null)
 			throw new ResourceNotFoundException("No se encontraron resultados para el id: " + id);

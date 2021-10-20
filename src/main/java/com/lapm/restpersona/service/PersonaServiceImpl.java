@@ -12,8 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.reflect.TypeToken;
-import com.lapm.restpersona.entity.PersonaEntity;
-import com.lapm.restpersona.model.Persona;
+import com.lapm.restpersona.dto.PersonaDTO;
+import com.lapm.restpersona.entity.Persona;
 import com.lapm.restpersona.repository.PersonaRepository;
 
 
@@ -25,28 +25,28 @@ public class PersonaServiceImpl implements PersonaService{
 	private PersonaRepository personaRepository;
 	
 	@Override
-	public Persona consultarPersonaPorId(Integer id) {
-		Optional<PersonaEntity> personaEntity = personaRepository.findById(id);
+	public PersonaDTO consultarPersonaPorId(Integer id) {
+		Optional<Persona> personaEntity = personaRepository.findById(id);
 		return personaEntity.isPresent() ? personaEntity.get().toModel() : null;
 	}
 	
 	@Override
-	public Page<Persona> consultarPersonas(Pageable pageable) {
-		Page<PersonaEntity> entityList = personaRepository.findAll(pageable);
-		Type listType = new TypeToken<Page<Persona>>(){}.getType();
+	public Page<PersonaDTO> consultarPersonas(Pageable pageable) {
+		Page<Persona> entityList = personaRepository.findAll(pageable);
+		Type listType = new TypeToken<Page<PersonaDTO>>(){}.getType();
 		return new ModelMapper().map(entityList, listType);
 	}
 	
 	@Override
 	@Transactional
-	public Persona guardarPersona(PersonaEntity persona) {
+	public PersonaDTO guardarPersona(Persona persona) {
 		personaRepository.save(persona);
 		return persona.toModel();
 	}
 	
 	@Override
 	@Transactional
-	public void actualizarPersona(PersonaEntity persona) {
+	public void actualizarPersona(Persona persona) {
 		personaRepository.save(persona);
 	}
 	

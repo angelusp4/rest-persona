@@ -24,9 +24,9 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lapm.restpersona.model.Persona;
-import com.lapm.restpersona.model.Response;
-import com.lapm.restpersona.model.exception.ResponseError;
+import com.lapm.restpersona.dto.PersonaDTO;
+import com.lapm.restpersona.dto.ResponseDTO;
+import com.lapm.restpersona.dto.exception.ResponseError;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -53,7 +53,7 @@ public class PersonaTest {
 	public void list() throws IOException {
 		final String url = String.format(PATH, port, "");
 		ResponseEntity<String> response = restTemplate.getForEntity(url,String.class);
-		Response<List<Persona>> restResponse = MAPPER.readValue(response.getBody(), Response.class);
+		ResponseDTO<List<PersonaDTO>> restResponse = MAPPER.readValue(response.getBody(), ResponseDTO.class);
 		
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(restResponse.getContent().size()).isEqualTo(2);
@@ -62,7 +62,7 @@ public class PersonaTest {
 	@Test
 	public void get() throws IOException {
 		final String url = String.format(PATH, port, 2);
-		ResponseEntity<Persona> response = restTemplate.getForEntity(url,Persona.class);
+		ResponseEntity<PersonaDTO> response = restTemplate.getForEntity(url,PersonaDTO.class);
 		
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(response.getBody().getNombre()).isEqualTo("Pedro Aguilar Lopez");
@@ -83,9 +83,9 @@ public class PersonaTest {
 	public void add() throws IOException {
 		final String url =  String.format(PATH, port, "");
 		InputStream json = resourceLoader.getResource(JSON_PATH + "add.json").getInputStream();
-		final Persona persona = MAPPER.readValue(json, Persona.class);
+		final PersonaDTO persona = MAPPER.readValue(json, PersonaDTO.class);
 		
-		ResponseEntity<Persona> response = restTemplate.postForEntity(url, persona, Persona.class);
+		ResponseEntity<PersonaDTO> response = restTemplate.postForEntity(url, persona, PersonaDTO.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 		assertThat(response.getBody().getNombre()).isEqualTo("Luis Prdm");
 		assertThat(response.getBody().getSexo()).isEqualTo("M");
@@ -96,7 +96,7 @@ public class PersonaTest {
 	public void addBadRequest() throws IOException {
 		final String url =  String.format(PATH, port, "");
 		InputStream json = resourceLoader.getResource(JSON_PATH + "add-bad-request.json").getInputStream();
-		final Persona persona = MAPPER.readValue(json, Persona.class);
+		final PersonaDTO persona = MAPPER.readValue(json, PersonaDTO.class);
 		
 		ResponseEntity<ResponseError> response = restTemplate.postForEntity(url, persona, ResponseError.class);
 		assertThat(response.getBody().getMessage()).isEqualTo("El nombre es requerido");
@@ -106,11 +106,11 @@ public class PersonaTest {
 	public void edit() throws IOException {
 		final String url = String.format(PATH, port, 1);
 		InputStream json = resourceLoader.getResource(JSON_PATH + "edit.json").getInputStream();
-		Persona persona = MAPPER.readValue(json, Persona.class);
-		HttpEntity<Persona> entity = new HttpEntity<>(persona);
+		PersonaDTO persona = MAPPER.readValue(json, PersonaDTO.class);
+		HttpEntity<PersonaDTO> entity = new HttpEntity<>(persona);
 		
 		
-		ResponseEntity<Persona> getResponse = restTemplate.getForEntity(url, Persona.class);
+		ResponseEntity<PersonaDTO> getResponse = restTemplate.getForEntity(url, PersonaDTO.class);
 		assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(getResponse.getBody().getNombre()).isEqualTo("Alejandra Rodriguez Garcia");
 		assertThat(getResponse.getBody().getTelefono()).isEqualTo("5532123663");
@@ -118,7 +118,7 @@ public class PersonaTest {
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 		
-		getResponse = restTemplate.getForEntity(url, Persona.class);
+		getResponse = restTemplate.getForEntity(url, PersonaDTO.class);
 		assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(getResponse.getBody().getNombre()).isEqualTo("Alejandra Garcia");
 		assertThat(getResponse.getBody().getTelefono()).isEqualTo("5555555555");
@@ -129,8 +129,8 @@ public class PersonaTest {
 	public void editBadRequest() throws IOException {
 		final String url = String.format(PATH, port, 1);
 		InputStream json = resourceLoader.getResource(JSON_PATH + "edit-bad-request.json").getInputStream();
-		Persona persona = MAPPER.readValue(json, Persona.class);
-		HttpEntity<Persona> entity = new HttpEntity<>(persona);
+		PersonaDTO persona = MAPPER.readValue(json, PersonaDTO.class);
+		HttpEntity<PersonaDTO> entity = new HttpEntity<>(persona);
 		
 		ResponseEntity<ResponseError> response = restTemplate.exchange(url, HttpMethod.PUT, entity, ResponseError.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -142,8 +142,8 @@ public class PersonaTest {
 	public void editNotFound() throws IOException {
 		final String url = String.format(PATH, port, 11);
 		InputStream json = resourceLoader.getResource(JSON_PATH + "edit.json").getInputStream();
-		Persona persona = MAPPER.readValue(json, Persona.class);
-		HttpEntity<Persona> entity = new HttpEntity<>(persona);
+		PersonaDTO persona = MAPPER.readValue(json, PersonaDTO.class);
+		HttpEntity<PersonaDTO> entity = new HttpEntity<>(persona);
 	
 		ResponseEntity<ResponseError> response = restTemplate.exchange(url, HttpMethod.PUT, entity, ResponseError.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -154,13 +154,13 @@ public class PersonaTest {
 	public void delete() {
 		final String url = String.format(PATH, port, 3);
 		
-		ResponseEntity<Persona> get = restTemplate.getForEntity(url, Persona.class);
+		ResponseEntity<PersonaDTO> get = restTemplate.getForEntity(url, PersonaDTO.class);
 		assertThat(get.getStatusCode()).isEqualTo(HttpStatus.OK);
 		
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 		
-		get = restTemplate.getForEntity(url, Persona.class);
+		get = restTemplate.getForEntity(url, PersonaDTO.class);
 		assertThat(get.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 	

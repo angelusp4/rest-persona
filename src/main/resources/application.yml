@@ -1,4 +1,9 @@
+server:
+  port: 8081 
+
 spring:
+  application:
+    name: rest-persona
   data:
     web:
       pageable:

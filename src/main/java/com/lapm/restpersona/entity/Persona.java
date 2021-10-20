@@ -9,14 +9,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.lapm.restpersona.model.Persona;
+import com.lapm.restpersona.dto.PersonaDTO;
 
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name="persona")
-public class PersonaEntity implements Serializable{
+public class Persona implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -30,8 +30,8 @@ public class PersonaEntity implements Serializable{
 	private String telefono;
 	private String email;
 	
-	public Persona toModel() {
-		Persona persona = new Persona();
+	public PersonaDTO toModel() {
+		PersonaDTO persona = new PersonaDTO();
 		persona.setId(id);
 		persona.setNombre(nombre);
 		persona.setSexo(sexo);

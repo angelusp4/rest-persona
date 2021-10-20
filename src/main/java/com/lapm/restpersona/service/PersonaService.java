@@ -3,18 +3,18 @@ package com.lapm.restpersona.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.lapm.restpersona.entity.PersonaEntity;
-import com.lapm.restpersona.model.Persona;
+import com.lapm.restpersona.dto.PersonaDTO;
+import com.lapm.restpersona.entity.Persona;
 
 public interface PersonaService {
 
-	Persona consultarPersonaPorId(Integer id);
+	PersonaDTO consultarPersonaPorId(Integer id);
 
-	Page<Persona> consultarPersonas(Pageable pageable);
+	Page<PersonaDTO> consultarPersonas(Pageable pageable);
 
-	Persona guardarPersona(PersonaEntity persona);
+	PersonaDTO guardarPersona(Persona persona);
 
-	void actualizarPersona(PersonaEntity persona);
+	void actualizarPersona(Persona persona);
 
 	void borrarPersonaPorId(Integer id);
 }
